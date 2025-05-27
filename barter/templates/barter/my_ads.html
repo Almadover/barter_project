@@ -1,0 +1,26 @@
+{% extends 'barter/base.html' %}
+{% block title %}Мои объявления{% endblock %}
+{% block content %}
+<h2>Мои объявления</h2>
+<a href="{% url 'ad_create' %}" class="btn btn-success mb-3">Добавить объявление</a>
+<div class="row">
+    {% for ad in ads %}
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            {% if ad.image %}
+            <img src="{{ ad.image.url }}" class="card-img-top" style="height: 200px; object-fit: cover;">
+            {% endif %}
+            <div class="card-body">
+                <h5 class="card-title">{{ ad.title }}</h5>
+                <p>{{ ad.description|truncatewords:15 }}</p>
+                <a href="{% url 'ad_detail' ad.id %}" class="btn btn-outline-primary">Подробнее</a>
+                <a href="{% url 'ad_edit' ad.id %}" class="btn btn-warning btn-sm">Редактировать</a>
+                <a href="{% url 'ad_delete' ad.id %}" class="btn btn-danger btn-sm">Удалить</a>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <p>У вас нет объявлений.</p>
+    {% endfor %}
+</div>
+{% endblock %}

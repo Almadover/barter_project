@@ -1,0 +1,59 @@
+{% extends "barter/base.html" %}
+{% block content %}
+<h2>Мои заявки на обмен</h2>
+
+<!-- Форма фильтрации -->
+<form method="get" class="row g-2 align-items-end mb-4">
+  <div class="col-md-3">
+    <input type="text" class="form-control" name="sender" placeholder="Отправитель" value="{{ selected_sender }}">
+  </div>
+  <div class="col-md-3">
+    <input type="text" class="form-control" name="receiver" placeholder="Получатель" value="{{ selected_receiver }}">
+  </div>
+  <div class="col-md-3">
+    <select name="status" class="form-select">
+      <option value="" {% if not selected_status %}selected{% endif %}>Статус</option>
+      <option value="pending" {% if selected_status == "pending" %}selected{% endif %}>Ожидает решения</option>
+      <option value="accepted" {% if selected_status == "accepted" %}selected{% endif %}>Принята</option>
+      <option value="declined" {% if selected_status == "declined" %}selected{% endif %}>Отклонена</option>
+    </select>
+  </div>
+  <div class="col-auto">
+    <button type="submit" class="btn btn-primary">Фильтр</button>
+  </div>
+</form>
+
+{% if proposals %}
+  {% for proposal in proposals %}
+    <div class="card mb-4" style="max-width: 600px;">
+      <div class="row g-0">
+        <div class="col-md-4 text-center my-auto">
+          {% if proposal.ad_sender.image %}
+            <img src="{{ proposal.ad_sender.image.url }}" alt="{{ proposal.ad_sender.title }}" class="img-fluid rounded" style="max-height:110px;">
+          {% endif %}
+        </div>
+        <div class="col-md-8">
+          <div class="card-body">
+            <b>Вы предложили ваш товар:</b> {{ proposal.ad_sender.title }}<br>
+            <b>для обмена на:</b> {{ proposal.ad_receiver.title }}<br>
+            {% if proposal.ad_receiver.image %}
+              <img src="{{ proposal.ad_receiver.image.url }}" alt="{{ proposal.ad_receiver.title }}" class="img-fluid rounded" style="max-height:80px; margin: 5px 0;">
+            {% endif %}
+            <b>Статус:</b>
+            {% if proposal.status == "pending" %}
+              <span class="badge bg-secondary">Ожидает решения</span>
+            {% elif proposal.status == "accepted" %}
+              <span class="badge bg-success">Принята</span>
+            {% elif proposal.status == "declined" %}
+              <span class="badge bg-danger">Отклонена</span>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  {% endfor %}
+{% else %}
+  <div class="alert alert-info">Вы ещё не отправляли заявок на обмен.</div>
+{% endif %}
+
+{% endblock %}

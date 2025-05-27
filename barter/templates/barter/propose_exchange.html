@@ -1,0 +1,16 @@
+{% extends 'barter/base.html' %}
+{% block content %}
+  <h2>Предложить обмен на "{{ ad_receiver.title }}"</h2>
+  <form method="post">
+    {% csrf_token %}
+    <div class="mb-3">
+      <label for="my_ad_id">Выберите одно из ваших объявлений:</label>
+      <select name="my_ad_id" id="my_ad_id" class="form-control" required>
+        {% for ad in my_ads %}
+          <option value="{{ ad.id }}">{{ ad.title }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <button type="submit" class="btn btn-primary">Отправить заявку</button>
+  </form>
+{% endblock %}

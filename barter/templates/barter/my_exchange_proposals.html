@@ -1,0 +1,77 @@
+{% extends "barter/base.html" %}
+{% load static %}
+
+{% block content %}
+<ul class="nav nav-tabs mb-3">
+  <li class="nav-item">
+    <a class="nav-link {% if tab == 'incoming' %}active{% endif %}" href="{% url 'my_exchange_proposals' %}?tab=incoming">Входящие заявки</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link {% if tab == 'outgoing' %}active{% endif %}" href="{% url 'my_exchange_proposals' %}?tab=outgoing">Исходящие заявки</a>
+  </li>
+</ul>
+
+{% if proposals %}
+  <div class="row">
+    {% for proposal in proposals %}
+      <div class="col-md-6 mb-3">
+        <div class="card h-100 d-flex flex-column">
+          <div class="row g-0">
+            <div class="col-md-4 d-flex align-items-center justify-content-center bg-light">
+              {% if tab == "incoming" %}
+                {% if proposal.ad_sender.image %}
+                  <img src="{{ proposal.ad_sender.image.url }}" class="img-fluid rounded-start" style="max-height: 100px; object-fit: contain;" alt="Фото">
+                {% else %}
+                  <img src="{% static 'img/no-photo.png' %}" class="img-fluid rounded-start" style="max-height: 100px; object-fit: contain;" alt="Нет фото">
+                {% endif %}
+              {% elif tab == "outgoing" %}
+                {% if proposal.ad_receiver.image %}
+                  <img src="{{ proposal.ad_receiver.image.url }}" class="img-fluid rounded-start" style="max-height: 100px; object-fit: contain;" alt="Фото">
+                {% else %}
+                  <img src="{% static 'img/no-photo.png' %}" class="img-fluid rounded-start" style="max-height: 100px; object-fit: contain;" alt="Нет фото">
+                {% endif %}
+              {% endif %}
+            </div>
+            <div class="col-md-8">
+              <div class="card-body">
+                {% if tab == "incoming" %}
+                  <h5 class="card-title">
+                    {{ proposal.ad_sender.title }} меняют на {{ proposal.ad_receiver.title }}
+                  </h5>
+                  {% if proposal.comment %}
+                    <p class="card-text">Комментарий: {{ proposal.comment }}</p>
+                  {% endif %}
+                  <p>Статус: {{ proposal.get_status_display }}</p>
+                  {% if proposal.status == "pending" %}
+                    <form method="post" action="{% url 'accept_exchange_proposal' proposal.id %}" style="display:inline;">
+                      {% csrf_token %}
+                      <button class="btn btn-success">Принять</button>
+                    </form>
+                    <form method="post" action="{% url 'decline_exchange_proposal' proposal.id %}" style="display:inline;">
+                      {% csrf_token %}
+                      <button class="btn btn-danger">Отклонить</button>
+                    </form>
+                  {% endif %}
+                {% elif tab == "outgoing" %}
+                  <h5 class="card-title">
+                    {{ proposal.ad_sender.title }} обменивается на {{ proposal.ad_receiver.title }}
+                  </h5>
+                  {% if proposal.comment %}
+                    <p class="card-text">Комментарий: {{ proposal.comment }}</p>
+                  {% endif %}
+                  <p>Статус: {{ proposal.get_status_display }}</p>
+                  {% if proposal.status == "pending" %}
+                    <span class="text-muted">Ожидает решения</span>
+                  {% endif %}
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+{% else %}
+  <p>Заявок нет.</p>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,57 @@
+{% extends 'barter/base.html' %}
+
+{% block title %}Создать объявление{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Разместить новое объявление</h2>
+    <form method="post" enctype="multipart/form-data" class="mt-3 card p-4 shadow-sm" autocomplete="off">
+        {% csrf_token %}
+
+        {% if form.nonfielderrors %}
+            <div class="alert alert-danger">
+                {{ form.nonfielderrors }}
+            </div>
+        {% endif %}
+
+        <div class="mb-3">
+            <label for="{{ form.title.idforlabel }}" class="form-label">Заголовок</label>
+            {{ form.title }}
+            {% for error in form.title.errors %}
+                <div class="text-danger">{{ error }}</div>
+            {% endfor %}
+        </div>
+        <div class="mb-3">
+            <label for="{{ form.description.idforlabel }}" class="form-label">Описание товара</label>
+            {{ form.description }}
+            {% for error in form.description.errors %}
+                <div class="text-danger">{{ error }}</div>
+            {% endfor %}
+        </div>
+        <div class="mb-3">
+            <label for="{{ form.category.idforlabel }}" class="form-label">Категория</label>
+            {{ form.category }}
+            {% for error in form.category.errors %}
+                <div class="text-danger">{{ error }}</div>
+            {% endfor %}
+        </div>
+        <div class="mb-3">
+            <label for="{{ form.condition.idforlabel }}" class="form-label">Состояние товара</label>
+            {{ form.condition }}
+            {% for error in form.condition.errors %}
+                <div class="text-danger">{{ error }}</div>
+            {% endfor %}
+        </div>
+        <div class="mb-3">
+            <label for="{{ form.image.idforlabel }}" class="form-label">Загрузить фото (необязательно)</label>
+            {{ form.image }}
+            {% for error in form.image.errors %}
+                <div class="text-danger">{{ error }}</div>
+            {% endfor %}
+        </div>
+
+        <button type="submit" class="btn btn-success">Создать объявление</button>
+        <a href="{% url 'my_ads' %}" class="btn btn-secondary ms-2">Отмена</a>
+    </form>
+</div>
+{% endblock %}

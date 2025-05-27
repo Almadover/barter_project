@@ -1,0 +1,41 @@
+{% extends 'barter/base.html' %}
+{% block title %}{{ ad.title }}{% endblock %}
+{% block content %}
+<div class="row">
+    <div class="col-md-6">
+        {% if ad.image %}<img src="{{ ad.image.url }}" class="img-fluid mb-3 rounded" style="max-height: 400px;">
+        {% endif %}
+    </div>
+    <div class="col-md-6">
+        <h3>{{ ad.title }}</h3>
+        <p class="mb-2"><b>Категория:</b> {{ ad.category }}</p>
+        <p><b>Состояние:</b> {{ ad.get_condition_display }}</p>
+        <p><b>Описание:</b> {{ ad.description }}</p>
+        <p class="text-muted"><b>Автор:</b> {{ ad.user.username }}</p>
+
+        {% if user.is_authenticated and user != ad.user %}
+        <form action="{% url 'propose_exchange' ad.id %}" method="post">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label class="form-label">Выберите свое объявление для обмена:</label>
+                <select name="ad_sender" class="form-select">
+                    {% for my_ad in my_ads %}
+                        <option value="{{ my_ad.id }}">{{ my_ad.title }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Комментарий:</label>
+                <textarea name="comment" class="form-control"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Предложить обмен</button>
+        </form>
+        {% endif %}
+
+        {% if user == ad.user %}
+        <a href="{% url 'ad_edit' ad.id %}" class="btn btn-warning">Редактировать</a>
+        <a href="{% url 'ad_delete' ad.id %}" class="btn btn-danger">Удалить</a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

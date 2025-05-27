@@ -1,0 +1,54 @@
+{% extends 'barter/base.html' %}
+{% block title %}Объявления{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between mb-3">
+    <h2>Объявления</h2>
+    {% if user.is_authenticated %}
+    <a href="{% url 'ad_create' %}" class="btn btn-success">Добавить объявление</a>
+    {% endif %}
+</div>
+<form method="get" class="mb-4 row">
+    <div class="col-md-4">
+        <input type="text" name="q" value="{{ request.GET.q }}" class="form-control" placeholder="Поиск...">
+    </div>
+    <div class="col-md-3">
+        <select name="category" class="form-select">
+            <option value="">Категория</option>
+            {% for cat in categories %}
+            <option value="{{ cat.id }}"{% if cat.id|stringformat:"s" == request.GET.category %} selected{% endif %}>{{ cat.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="col-md-3">
+        <select name="condition" class="form-select">
+            <option value="">Состояние</option>
+            <option value="new"{% if request.GET.condition == 'new' %} selected{% endif %}>Новый</option>
+            <option value="used"{% if request.GET.condition == 'used' %} selected{% endif %}>Б/У</option>
+        </select>
+    </div>
+    <div class="col-md-2">
+        <button type="submit" class="btn btn-primary w-100">Фильтр</button>
+    </div>
+</form>
+<div class="row">
+    {% for ad in ads %}
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            {% if ad.image %}
+            <img src="{{ ad.image.url }}" class="card-img-top" style="height: 200px; object-fit: cover;">
+            {% endif %}
+            <div class="card-body">
+                <h5 class="card-title">{{ ad.title }}</h5>
+                <p>Категория: {{ ad.category }}</p>
+                <p>Состояние: {{ ad.get_condition_display }}</p>
+                <p class="text-muted">Автор: {{ ad.user.username }}</p>
+                <p class="text-muted">Добавлено: {{ ad.created_at|date:"d.m.Y H:i" }}</p>
+                <a href="{% url 'ad_detail' ad.id %}" class="btn btn-outline-primary">Подробнее</a>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <p>Объявлений не найдено.</p>
+    {% endfor %}
+</div>
+{% endblock %}
