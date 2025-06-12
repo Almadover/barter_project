@@ -7,7 +7,12 @@ __pycache__/
 *.so
 
 # Django media and static files
-media/
+media/*
+!media/.gitkeep
+!media/ads/
+!media/ads/.gitkeep
+!media/ads_images/
+!media/ads_images/.gitkeep
 staticfiles/
 
 # Virtual environment
