@@ -1,1 +1,60 @@
-.pytest_cache
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Django media and static files
+media/
+staticfiles/
+
+# Virtual environment
+venv/
+env/
+ENV/
+.venv/
+.pyvenv/
+
+# Django stuff:
+*.log
+*.pot
+*.pyc
+*.pyo
+*.db
+*.sqlite3
+
+# VS Code, PyCharm, and other editor metadata
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# MacOS
+.DS_Store
+
+# Test and coverage files
+.coverage
+htmlcov/
+.tox/
+.nox/
+*.egg
+*.egg-info/
+dist/
+build/
+eggs/
+.parts/
+sdist/
+var/
+pip-wheel-metadata/
+coverage.xml
+
+# Node.js (если используете)
+node_modules/
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# System files
+Thumbs.db

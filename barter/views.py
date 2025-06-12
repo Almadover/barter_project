@@ -6,8 +6,11 @@ from django.contrib import messages
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import login as auth_login
+from django.core.paginator import Paginator
 
 def home(request):
+    from django.core.paginator import Paginator
+
     q = request.GET.get('q')
     category = request.GET.get('category')
     condition = request.GET.get('condition')
@@ -20,10 +23,14 @@ def home(request):
     if condition:
         ads = ads.filter(condition=condition)
 
+    paginator = Paginator(ads, 6)  # 6 объявлений на страницу (можно изменить)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
     categories = Category.objects.all()
     return render(request, 'barter/home.html', {
-        'ads': ads,
-        'categories': categories
+        'page_obj': page_obj,
+        'categories': categories,
     })
 
 @login_required

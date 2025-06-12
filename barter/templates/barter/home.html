@@ -31,11 +31,11 @@
     </div>
 </form>
 <div class="row">
-    {% for ad in ads %}
+    {% for ad in page_obj %}
     <div class="col-md-4 mb-4">
         <div class="card h-100">
             {% if ad.image %}
-            <img src="{{ ad.image.url }}" class="card-img-top" style="height: 200px; object-fit: cover;">
+            <img src="{{ ad.image.url }}" class="card-img-top" style="width: 100%; height: 200px; object-fit: contain;">
             {% endif %}
             <div class="card-body">
                 <h5 class="card-title">{{ ad.title }}</h5>
@@ -51,4 +51,36 @@
     <p>Объявлений не найдено.</p>
     {% endfor %}
 </div>
+
+{% if page_obj.has_other_pages %}
+<nav aria-label="Пагинация">
+    <ul class="pagination justify-content-center">
+        {% if page_obj.has_previous %}
+        <li class="page-item">
+            <a class="page-link" href="?{% if request.GET.q %}q={{ request.GET.q }}&amp;{% endif %}{% if request.GET.category %}category={{ request.GET.category }}&amp;{% endif %}{% if request.GET.condition %}condition={{ request.GET.condition }}&amp;{% endif %}page={{ page_obj.previous_page_number }}">Предыдущая</a>
+        </li>
+        {% else %}
+        <li class="page-item disabled">
+            <span class="page-link">Предыдущая</span>
+        </li>
+        {% endif %}
+        {% for num in page_obj.paginator.page_range %}
+        {% if page_obj.number == num %}
+        <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+        {% elif num >= page_obj.number|add:'-2' and num <= page_obj.number|add:'2' %}
+        <li class="page-item"><a class="page-link" href="?{% if request.GET.q %}q={{ request.GET.q }}&amp;{% endif %}{% if request.GET.category %}category={{ request.GET.category }}&amp;{% endif %}{% if request.GET.condition %}condition={{ request.GET.condition }}&amp;{% endif %}page={{ num }}">{{ num }}</a></li>
+        {% endif %}
+        {% endfor %}
+        {% if page_obj.has_next %}
+        <li class="page-item">
+            <a class="page-link" href="?{% if request.GET.q %}q={{ request.GET.q }}&amp;{% endif %}{% if request.GET.category %}category={{ request.GET.category }}&amp;{% endif %}{% if request.GET.condition %}condition={{ request.GET.condition }}&amp;{% endif %}page={{ page_obj.next_page_number }}">Следующая</a>
+        </li>
+        {% else %}
+        <li class="page-item disabled">
+            <span class="page-link">Следующая</span>
+        </li>
+        {% endif %}
+    </ul>
+</nav>
+{% endif %}
 {% endblock %}
